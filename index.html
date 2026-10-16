@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artemis II Space Exploration</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind-config.js"></script>
+
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body class="bg-base bg-grid-pattern text-white selection:bg-accent selection:text-white">
+
+    <!-- SVG Filter for Grain (Hidden) -->
+    <svg class="svg-filter-defs">
+        <filter id="grainFilter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+            <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.1 0" />
+        </filter>
+    </svg>
+
+    <!-- Grain Overlay (z-index 9000, 0.03 op) -->
+    <div class="fixed inset-0 pointer-events-none z-[9000] opacity-[0.03]" style="filter: url(#grainFilter);"></div>
+
+    <!-- Scroll Progress (z-index 999) -->
+    <div id="scroll-progress" class="fixed top-0 left-0 w-full h-[2px] bg-accent z-[999] origin-left scale-x-0"></div>
+
+    <!-- Background music starts after the user clicks "lanjutkan membaca". -->
+    <audio id="background-music" preload="auto" loop hidden aria-label="Musik latar">
+        <source src="assets/audio/lagu.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Navigation (z-index 100) -->
+    <nav class="fixed top-0 left-0 w-full z-[100] py-6 px-6 md:px-12 flex justify-between items-center transition-all duration-300">
+        <div class="flex items-center gap-3">
+            <span class="font-medium tracking-widest text-xs sm:text-sm uppercase text-muted">Satrio
+            </span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="#hero" class="hover:text-accent transition-colors">Home</a>
+            <a href="#crew" class="hover:text-accent transition-colors">Crew</a>
+            <a href="#timeline" class="hover:text-accent transition-colors">Our Story</a>
+        </div>
+        <button id="mobile-menu-toggle" class="md:hidden text-2xl text-white p-2 -mr-2" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
+            <span class="iconify" data-icon="solar:hamburger-menu-linear"></span>
+        </button>
+        <div id="mobile-menu" class="mobile-menu md:hidden" aria-hidden="true">
+            <a href="#hero">Home</a>
+            <a href="#crew">Crew</a>
+            <a href="#timeline">Our Story</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- SECTION 1 - HERO -->
+        <section id="hero" class="hero-section relative w-full min-h-[100svh] h-auto py-32 sm:py-40 flex items-center justify-center overflow-hidden">
+            <!-- Hero BG (opacity 0.5) -->
+            <div class="hero-background absolute inset-0 z-0 opacity-50 bg-cover bg-center"></div>
+            
+            <!-- Hero Overlay Gradient (z-index 1) -->
+            <div class="absolute inset-0 z-[1] bg-gradient-to-b from-black/20 via-black/60 to-base"></div>
+            
+            <!-- Star Particles Container -->
+            <div id="stars-container" class="absolute inset-0 z-[1] pointer-events-none"></div>
+
+            <!-- Hero Content (z-index 2) -->
+            <div class="relative z-[2] text-center px-4 w-full max-w-4xl mx-auto flex flex-col items-center">
+                <span class="px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-xs font-semibold tracking-widest uppercase mb-6 backdrop-blur-sm">
+                    Dear For U
+                </span>
+                
+                <h1 id="hero-title" class="text-5xl sm:text-6xl md:text-8xl lg:text-[120px] font-bold tracking-tighter leading-none mb-6">
+                    <!-- Text split via JS -->
+                    Casviana Putri
+                </h1>
+                
+                <p class="w-full text-base sm:text-lg md:text-xl text-muted max-w-2xl mx-auto mb-8 sm:mb-10 font-light leading-relaxed">
+                   aku tak berlimang harta, aku hanya bisa memberikan hal yang mungkin bagi orang tak ada harga nya.
+                </p>
+                
+                <a id="continue-reading" href="#crew" class="group relative inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-black text-sm sm:text-base font-semibold rounded-full hover:-translate-y-[2px] transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                    Klik ini, sayang.
+                    <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:arrow-right-linear"></span>
+                </a>
+                <p class="volume-note" role="note">
+                    <span class="iconify" aria-hidden="true"></span>
+                    <span>Besarkan volume untuk mendengar musiknya.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2 - OUR LITTLE UNIVERSE -->
+        <section id="crew" class="universe-section relative w-full py-20 sm:py-32 px-4 sm:px-6 md:px-12 bg-base border-t border-white/5">
+            <div class="max-w-7xl mx-auto">
+                <div class="universe-heading mb-10 sm:mb-14">
+                    <div class="text-accent text-xs sm:text-sm font-bold tracking-[0.2em] uppercase mb-3">Section 02 / Our Little Universe</div>
+                    <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Two people, one small universe.</h2>
+                    <p class="text-base sm:text-lg text-muted max-w-2xl leading-relaxed">Sebelum masuk ke cerita yang lebih panjang, ini sedikit gambaran tentang dua orang yang sedang membangun semestanya sendiri.</p>
+                </div>
+
+                <div class="universe-grid">
+                    <article class="universe-hero-card">
+                        <div class="universe-photo">
+                            <img src="assets/images/via3.jpeg" alt="Satrio dan Casviana berdiri bersama di sebuah jalan pada malam hari" loading="lazy">
+                            <div class="universe-photo-label">Memory 01 / The two of us</div>
+                            <button id="universe-note-toggle" class="universe-photo-action" type="button" aria-expanded="false" aria-controls="universe-note">
+                                <span>lihat cerita foto</span>
+                                <span class="iconify" data-icon="solar:arrow-up-right-linear" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="universe-hero-content">
+                            <span class="universe-label">The Two of Us</span>
+                            <h3>Hal-hal sederhana terasa berbeda saat bersamamu.</h3>
+                            <p id="universe-note" hidden>Foto ini bukan tentang tempat yang sempurna. Ini tentang dua orang yang bisa membuat malam biasa terasa seperti bagian kecil dari semesta mereka sendiri.</p>
+                        </div>
+                    </article>
+
+                    <article class="universe-card universe-card--her">
+                        <div class="universe-card-top">
+                            <span class="universe-label">Her Orbit</span>
+                            <span class="iconify universe-card-icon"></span>
+                        </div>
+                        <div class="universe-card-photo">
+                            <img src="assets/images/via4.jpeg" alt="Casviana tersenyum dalam sebuah foto" loading="lazy">
+                        </div>
+                        <div class="universe-card-copy">
+                            <h3>Casviana</h3>
+                            <p>Seseorang yang membuat hal-hal kecil terasa lebih hangat, bahkan ketika harinya sedang biasa saja.</p>
+                            <p>pramuka, kamu anak pramuka yang dimana kalau aku tak melakukan apapun pasti kamu yang sedang melakukan apapun.</p>
+                        </div>
+                        <div class="universe-card-footer">the one who makes the room brighter</div>
+                    </article>
+
+                    <article class="universe-card universe-card--me">
+                        <div class="universe-card-top">
+                            <span class="universe-label">My Orbit</span>
+                            <span class="iconify universe-card-icon"></span>
+                        </div>
+                        <div class="universe-card-photo">
+                            <img src="assets/images/bima1.jpeg" alt="Satrio tersenyum di tengah suasana pegunungan" loading="lazy">
+                        </div>
+                        <div class="universe-card-copy">
+                            <h3>Bima</h3>
+                            <p>Aku masih belajar menjadi seseorang yang pantas menemani kamu di setiap chapter berikutnya.</p>
+                            <p>aku suka OSIS, kehidupan aku tak jauh dari kegiatan OSIS ketika kamu tak sibuk aku terkadang sibuk akan kegiatan kegiatan OSIS.</p>
+                        </div>
+                        <div class="universe-card-footer">still learning, still choosing you</div>
+                    </article>
+
+                    <article class="universe-card universe-card--coordinates">
+                        <div class="universe-card-top">
+                            <span class="universe-label">Our Coordinates</span>
+                            <span class="iconify universe-card-icon"></span>
+                        </div>
+                        <div class="universe-coordinates">
+                            <div class="universe-coordinate-list">
+                                <div>
+                                    <span>First chapter</span>
+                                    <strong>Dimulai dari obrolan sederhana</strong>
+                                </div>
+                                <div>
+                                    <span>Shared frequency</span>
+                                    <strong>Masih menemukan alasan untuk tersenyum</strong>
+                                </div>
+                                <div>
+                                    <span>Current status</span>
+                                    <strong>Still choosing you</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2 - CREW -->
+        <!-- LEGACY CREW (kept hidden while Our Little Universe is active) -->
+        <section id="legacy-crew" class="legacy-crew hidden relative w-full py-20 sm:py-32 px-4 sm:px-6 md:px-12 bg-base border-t border-white/5">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-10 sm:mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">The Prime Crew</h2>
+                    <p class="text-base sm:text-lg text-muted max-w-xl">Four exceptional individuals selected to push the boundaries of deep space exploration aboard the Orion spacecraft.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Crew Card 1 -->
+                    <div class="crew-card group relative bg-panel rounded-2xl overflow-hidden border border-white/5 hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(56,189,248,0.1)] hover:border-accent/30 cursor-pointer flex flex-col">
+                        <div class="relative h-[260px] sm:h-[300px] lg:h-[340px] w-full overflow-hidden bg-dim/20">
+                            <img src="assets/images/reid-wiseman.jpg" 
+                                 alt="Reid Wiseman" 
+                                 class="w-full h-full object-cover object-top filter grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.04] transition-all duration-700 ease-out"
+                                 loading="lazy" onerror="handleImgFallback(this)">
+                            <div class="absolute top-4 right-4 text-xs font-semibold tracking-widest text-white/80 drop-shadow-md">US</div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-panel via-panel/20 to-transparent opacity-80"></div>
+                        </div>
+                        <div class="p-6 relative z-10 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold mb-1">Reid Wiseman</h3>
+                            <p class="text-accent text-sm font-medium mb-4 uppercase tracking-wider">Commander</p>
+                            <p class="text-muted text-sm leading-relaxed mb-6 flex-grow">Naval aviator and test pilot. Previously served as Flight Engineer aboard the ISS for Expedition 40/41.</p>
+                            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/5">
+                                <div class="text-center"><p class="text-xs text-dim mb-1">Days</p><p class="text-sm font-semibold">165</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">EVAs</p><p class="text-sm font-semibold">2</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">Flights</p><p class="text-sm font-semibold">1</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crew Card 2 -->
+                    <div class="crew-card group relative bg-panel rounded-2xl overflow-hidden border border-white/5 hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(56,189,248,0.1)] hover:border-accent/30 cursor-pointer flex flex-col">
+                        <div class="relative h-[260px] sm:h-[300px] lg:h-[340px] w-full overflow-hidden bg-dim/20">
+                            <img src="assets/images/victor-glover.jpg" 
+                                 alt="Victor Glover" 
+                                 class="w-full h-full object-cover object-top filter grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.04] transition-all duration-700 ease-out"
+                                 loading="lazy" onerror="handleImgFallback(this)">
+                            <div class="absolute top-4 right-4 text-xs font-semibold tracking-widest text-white/80 drop-shadow-md">US</div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-panel via-panel/20 to-transparent opacity-80"></div>
+                        </div>
+                        <div class="p-6 relative z-10 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold mb-1">Victor Glover</h3>
+                            <p class="text-accent text-sm font-medium mb-4 uppercase tracking-wider">Pilot</p>
+                            <p class="text-muted text-sm leading-relaxed mb-6 flex-grow">First operational flight of Crew Dragon. First African American to live on the ISS for an extended duration.</p>
+                            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/5">
+                                <div class="text-center"><p class="text-xs text-dim mb-1">Days</p><p class="text-sm font-semibold">168</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">EVAs</p><p class="text-sm font-semibold">4</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">Flights</p><p class="text-sm font-semibold">1</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crew Card 3 -->
+                    <div class="crew-card group relative bg-panel rounded-2xl overflow-hidden border border-white/5 hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(56,189,248,0.1)] hover:border-accent/30 cursor-pointer flex flex-col">
+                        <div class="relative h-[260px] sm:h-[300px] lg:h-[340px] w-full overflow-hidden bg-dim/20">
+                            <img src="assets/images/christina-koch.jpg" 
+                                 alt="Christina Koch" 
+                                 class="w-full h-full object-cover object-top filter grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.04] transition-all duration-700 ease-out"
+                                 loading="lazy" onerror="handleImgFallback(this)">
+                            <div class="absolute top-4 right-4 text-xs font-semibold tracking-widest text-white/80 drop-shadow-md">US</div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-panel via-panel/20 to-transparent opacity-80"></div>
+                        </div>
+                        <div class="p-6 relative z-10 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold mb-1">Christina Koch</h3>
+                            <p class="text-accent text-sm font-medium mb-4 uppercase tracking-wider">Mission Specialist 1</p>
+                            <p class="text-muted text-sm leading-relaxed mb-6 flex-grow">Holds the record for the longest single spaceflight by a woman. Participated in first all-female spacewalks.</p>
+                            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/5">
+                                <div class="text-center"><p class="text-xs text-dim mb-1">Days</p><p class="text-sm font-semibold">328</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">EVAs</p><p class="text-sm font-semibold">6</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">Flights</p><p class="text-sm font-semibold">1</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crew Card 4 -->
+                    <div class="crew-card group relative bg-panel rounded-2xl overflow-hidden border border-white/5 hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(56,189,248,0.1)] hover:border-accent/30 cursor-pointer flex flex-col">
+                        <div class="relative h-[260px] sm:h-[300px] lg:h-[340px] w-full overflow-hidden bg-dim/20">
+                            <img src="assets/images/jeremy-hansen.jpg" 
+                                 alt="Jeremy Hansen" 
+                                 class="w-full h-full object-cover object-top filter grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.04] transition-all duration-700 ease-out"
+                                 loading="lazy" onerror="handleImgFallback(this)">
+                            <div class="absolute top-4 right-4 text-xs font-semibold tracking-widest text-white/80 drop-shadow-md">CA</div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-panel via-panel/20 to-transparent opacity-80"></div>
+                        </div>
+                        <div class="p-6 relative z-10 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold mb-1">Jeremy Hansen</h3>
+                            <p class="text-accent text-sm font-medium mb-4 uppercase tracking-wider">Mission Specialist 2</p>
+                            <p class="text-muted text-sm leading-relaxed mb-6 flex-grow">CSA Astronaut and former CF-18 fighter pilot. First Canadian to travel to the Moon.</p>
+                            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/5">
+                                <div class="text-center"><p class="text-xs text-dim mb-1">Days</p><p class="text-sm font-semibold">0</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">EVAs</p><p class="text-sm font-semibold">0</p></div>
+                                <div class="text-center border-l border-white/5"><p class="text-xs text-dim mb-1">Flights</p><p class="text-sm font-semibold">0</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3 - OUR STORY -->
+        <section id="timeline" class="timeline-section relative w-full bg-cover bg-center">
+            <div class="absolute inset-0 bg-base/90 z-0"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row w-full max-w-[1400px] mx-auto">
+                
+                <!-- ORBIT COLUMN -->
+                <div class="flywheel-col fixed md:sticky top-0 left-0 md:top-0 w-[70px] md:w-1/2 h-[100vh] z-50 overflow-hidden md:overflow-visible pointer-events-none md:pointer-events-auto flex items-center justify-start md:justify-center">
+                    <div class="flywheel-container relative md:left-0 flex items-center justify-center w-full h-full">
+                        <div class="flywheel-wrapper" id="flywheel" aria-label="Orbit kenangan kita">
+                            <div class="flywheel-bg"></div>
+                            
+                            <div class="absolute top-1/2 left-1/2 -mt-8 -ml-8 w-16 h-16 bg-panel rounded-full border border-white/20 flex items-center justify-center z-20 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                                <span class="iconify text-3xl text-white" data-icon="solar:heart-linear" aria-hidden="true"></span>
+                            </div>
+
+                            <div class="orbiting-sat sat-1"></div>
+                            <div class="orbiting-sat sat-2"></div>
+
+                            <button class="flywheel-node" type="button" style="--deg: 0deg;" data-index="0" aria-label="Buka Chapter 01: The First Signal" aria-controls="story-signal">
+                                <span class="node-content"><span class="iconify text-xl" data-icon="solar:stars-minimalistic-linear" aria-hidden="true"></span></span>
+                            </button>
+                            <button class="flywheel-node" type="button" style="--deg: 72deg;" data-index="1" aria-label="Buka Chapter 02: Us in Frames" aria-controls="story-frames">
+                                <span class="node-content"><span class="iconify text-xl" data-icon="solar:gallery-wide-linear" aria-hidden="true"></span></span>
+                            </button>
+                            <button class="flywheel-node" type="button" style="--deg: 144deg;" data-index="2" aria-label="Buka Chapter 03: Words I Could Not Say" aria-controls="story-poem">
+                                <span class="node-content"><span class="iconify text-xl" data-icon="solar:pen-2-linear" aria-hidden="true"></span></span>
+                            </button>
+                            <button class="flywheel-node" type="button" style="--deg: 216deg;" data-index="3" aria-label="Buka Chapter 04: My First Impression" aria-controls="story-letter">
+                                <span class="node-content"><span class="iconify text-xl" data-icon="solar:letter-linear" aria-hidden="true"></span></span>
+                            </button>
+                            <button class="flywheel-node" type="button" style="--deg: 288deg;" data-index="4" aria-label="Buka Chapter 05: To Be Continued" aria-controls="story-future">
+                                <span class="node-content"><span class="iconify text-xl" data-icon="solar:infinity-linear" aria-hidden="true"></span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MOBILE STORY INDICATOR -->
+                <div class="mobile-timeline-indicator md:hidden" aria-label="Our story progress">
+                    <div class="mobile-timeline-meta">
+                        <span class="text-accent text-xs font-bold tracking-widest uppercase">Our story</span>
+                        <span id="mobile-phase-label" class="text-muted text-xs">Chapter 01 - The First Signal</span>
+                    </div>
+                    <div id="mobile-phase-track" class="mobile-timeline-track" role="progressbar" aria-label="Our story progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1"></div>
+                </div>
+
+                <!-- STORY CONTENT -->
+                <div class="content-col w-full md:w-1/2 ml-auto pl-[90px] md:pl-16 pr-6 md:pr-12 pt-[24vh] pb-[24vh]">
+                    
+                    <!-- Chapter 1 -->
+                    <article id="story-signal" class="day-card memory-card memory-card--signal mb-[32vh] relative" aria-labelledby="story-signal-title">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Chapter 01 / The First Signal</div>
+                        <h3 id="story-signal-title" class="text-3xl md:text-5xl font-bold mb-4">The First Signal</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Sebelum semuanya menjadi cerita, ada satu titik kecil yang membuat semesta terasa sedikit berbeda.</p>
+
+                        <div class="signal-instruction" role="note">
+                            <span class="iconify" aria-hidden="true"></span>
+                            <span>Interaktif, klik salah satu titik di orbit untuk membuka ceritanya.</span>
+                        </div>
+
+                        <div class="signal-experience">
+                            <div class="signal-orbit" aria-label="Tiga titik awal perjalanan kita">
+                                <span class="signal-orbit-ring signal-orbit-ring--outer" aria-hidden="true"></span>
+                                <span class="signal-orbit-ring signal-orbit-ring--inner" aria-hidden="true"></span>
+                                <button class="signal-point" type="button" data-title="The beginning" data-message="Dari obrolan sederhana, aku mulai menemukan alasan untuk menunggu kabar darimu." aria-pressed="false">
+                                    <span class="iconify" data-icon="solar:stars-minimalistic-linear" aria-hidden="true"></span>
+                                    <span class="sr-only">The beginning</span>
+                                </button>
+                                <button class="signal-point" type="button" data-title="The little things" data-message="Hal-hal kecil tentang kamu ternyata tinggal lebih lama di pikiranku daripada yang aku kira." aria-pressed="false">
+                                    <span class="iconify" data-icon="solar:chat-round-line-linear" aria-hidden="true"></span>
+                                    <span class="sr-only">The little things</span>
+                                </button>
+                                <button class="signal-point" type="button" data-title="The realization" data-message="Pelan-pelan, kamu bukan lagi sekadar seseorang yang aku kenal. Kamu menjadi seseorang yang ingin aku jaga." aria-pressed="false">
+                                    <span class="iconify" data-icon="solar:heart-linear" aria-hidden="true"></span>
+                                    <span class="sr-only">The realization</span>
+                                </button>
+                            </div>
+                            <div class="signal-copy" aria-live="polite">
+                                <span id="signal-label" class="text-accent text-xs font-bold tracking-widest uppercase">Pilih satu titik</span>
+                                <p id="signal-message" class="text-white text-lg leading-relaxed mt-3">Klik salah satu titik bercahaya untuk membuka potongan cerita pertama kita.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chapter 2 -->
+                    <article id="story-frames" class="day-card memory-card memory-card--frames mb-[32vh] relative" aria-labelledby="story-frames-title">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Chapter 02 / Us in Frames</div>
+                        <h3 id="story-frames-title" class="text-3xl md:text-5xl font-bold mb-4">Us in Frames</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Satu foto mungkin tidak bisa menyimpan seluruh cerita, tapi foto ini cukup untuk mengingatkan aku tentang rasa bahagia yang sederhana.</p>
+
+                        <div class="photo-experience">
+                            <figure class="memory-photo">
+                                <img src="assets/images/via2.jpeg" alt="Satrio dan Casviana berdiri bersama di sebuah jalan pada malam hari" loading="lazy">
+                                <figcaption>Memory 02 / One of the moments I want to keep.</figcaption>
+                            </figure>
+                            <div class="photo-note">
+                                <span class="text-accent text-xs font-bold tracking-widest uppercase">A frame worth keeping</span>
+                                <p class="text-white text-lg leading-relaxed mt-3">Ada foto yang tidak perlu terlihat sempurna. Cukup karena di dalamnya ada kamu, aku, dan satu malam yang ingin aku simpan lebih lama.</p>
+                                <button id="photo-story-toggle" class="story-toggle" type="button" aria-expanded="false" aria-controls="photo-story">
+                                    <span>lihat cerita foto</span>
+                                    <span class="iconify" data-icon="solar:arrow-down-linear" aria-hidden="true"></span>
+                                </button>
+                                <p id="photo-story" class="photo-story" hidden>Kalau suatu hari nanti kita lupa detailnya, semoga foto ini tetap bisa mengingatkan bahwa kita pernah sebahagia ini.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chapter 3 -->
+                    <article id="story-poem" class="day-card memory-card memory-card--poem mb-[32vh] relative" aria-labelledby="story-poem-title">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Chapter 03 / Words I Could Not Say</div>
+                        <h3 id="story-poem-title" class="text-3xl md:text-5xl font-bold mb-4">A Poem for You</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Beberapa hal terlalu hangat untuk dijelaskan dengan percakapan biasa, jadi kali ini aku titipkan lewat puisi.</p>
+
+                        <div class="poem-card">
+                            <span class="poem-mark" aria-hidden="true">&ldquo;</span>
+                            <p class="poem-teaser">Untuk kamu, yang datang pelan-pelan lalu membuat hari-hariku punya arah.</p>
+                            <button id="poem-toggle" class="story-toggle" type="button" aria-expanded="false" aria-controls="poem-body">
+                                <span>buka puisi untukmu</span>
+                                <span class="iconify" data-icon="solar:arrow-down-linear" aria-hidden="true"></span>
+                            </button>
+                            <div id="poem-body" class="poem-body" hidden>
+                                <p>
+                                    Kamu datang tanpa suara,<br>
+                                    tapi sejak itu hari-hariku<br>
+                                    punya arah yang berbeda.<br><br>
+                                    Di antara ramai dan jeda,<br>
+                                    aku menemukan tenang<br>
+                                    dari caramu yang sederhana.<br><br>
+                                    Kalau semesta adalah langit,<br>
+                                    mungkin kamu adalah alasan<br>
+                                    kenapa aku ingin terus pulang.
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chapter 4 -->
+                    <article id="story-letter" class="day-card memory-card memory-card--letter mb-[32vh] relative" aria-labelledby="story-letter-title">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Chapter 04 / About You</div>
+                        <h3 id="story-letter-title" class="text-3xl md:text-5xl font-bold mb-4">Manusia Teduh</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Sebuah surat kecil tentang kamu yang mungkin belum pernah benar-benar aku selesaikan.</p>
+
+                        <div class="letter-card">
+                            <figure class="letter-photo">
+                                <img src="assets/images/via1.jpeg" alt="Satrio dan Casviana dalam sebuah kenangan bersama" loading="lazy">
+                                <figcaption>Archive 04 / Still one of my favorite memories.</figcaption>
+                            </figure>
+                            <div class="letter-panel">
+                                <div class="letter-meta">PRIVATE TRANSMISSION / 04</div>
+                                <button id="letter-toggle" class="letter-toggle" type="button" aria-expanded="false" aria-controls="letter-body">
+                                    <span>Open this letter</span>
+                                    <span class="iconify" data-icon="solar:letter-opened-linear" aria-hidden="true"></span>
+                                </button>
+                                <div id="letter-body" class="letter-body" hidden>
+                                    <p class="letter-salutation">Sayang,</p>
+                                    <p>Meski kata teduh lebih sering digunakan untuk pohon, atau sesuatu yang melindungi kita dari teriknya matahari dan derasnya hujan, ternyata teduh juga bisa menjelma menjadi seseorang. Seseorang yang tak mengubah apa pun dari keadaan, tak menghentikan hujan, ataupun meredakan badai, tetapi kehadirannya membuat kita sanggup melewati semuanya.</p>
+                                    <p>Aku suka kata teduh, sebab maknanya terasa cukup untuk menjelaskan kamu. Kamu tak selalu datang membawa jawaban, tak pula mengubah keadaan menjadi lebih mudah. Kamu hanya ada, dengan caramu sendiri. Namun, entah bagaimana, keberadaanmu membuat segala sesuatu yang terasa berat menjadi sedikit lebih ringan, seolah dunia yang begitu melelahkan ini masih menyisakan tempat untukku beristirahat.</p>
+                                    <p>Mungkin, itulah teduh bagiku: bukan seseorang yang mampu mengubah keadaan, melainkan seseorang yang membuatku sanggup menghadapinya. Kamu tak harus memperbaiki segalanya, tak harus menghilangkan setiap luka atau menghentikan setiap hujan. Sebab terkadang, aku tak membutuhkan seseorang untuk mengubah duniaku. Aku hanya membutuhkan seseorang sepertimu, yang membuatku tetap sanggup berjalan, bahkan ketika dunia tak kunjung menjadi lebih baik.</p>
+                                    <p class="letter-signature">- Satrio</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chapter 5 -->
+                    <article id="story-future" class="day-card memory-card memory-card--future mb-[10vh] relative" aria-labelledby="story-future-title">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Chapter 05 / To Be Continued</div>
+                        <h3 id="story-future-title" class="text-3xl md:text-5xl font-bold mb-4">To Be Continued</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Cerita kita belum selesai. Pilih satu harapan kecil yang ingin kamu buka.</p>
+
+                        <div class="future-experience">
+                            <div class="future-choices" role="group" aria-label="Pilih harapan untuk cerita kita">
+                                <button class="future-choice" type="button" aria-pressed="false" data-title="More memories" data-message="Semoga kita punya lebih banyak hari sederhana yang nantinya berubah menjadi kenangan paling berharga.">More memories</button>
+                                <button class="future-choice" type="button" aria-pressed="false" data-title="More adventures" data-message="Semoga selalu ada tempat baru, cerita baru, dan alasan baru untuk berjalan berdampingan denganmu.">More adventures</button>
+                                <button class="future-choice" type="button" aria-pressed="false" data-title="More reasons to stay" data-message="Di antara semua hal yang berubah, semoga kita selalu menemukan alasan untuk tetap saling memilih.">More reasons to stay</button>
+                            </div>
+                            <div class="future-message" aria-live="polite">
+                                <span id="future-label" class="text-accent text-xs font-bold tracking-widest uppercase">Your next chapter</span>
+                                <p id="future-copy" class="text-white text-lg leading-relaxed mt-3">Pilih satu kartu. Mungkin ini bukan akhir, hanya jeda sebelum cerita berikutnya.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- LEGACY TIMELINE (kept hidden while the new story section is active) -->
+        <section id="legacy-timeline" class="timeline-section legacy-timeline hidden relative w-full bg-cover bg-center">
+            <!-- Overlay to darken subtle bg -->
+            <div class="absolute inset-0 bg-base/90 z-0"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row w-full max-w-[1400px] mx-auto">
+                
+                <!-- FLYWHEEL COLUMN (Left) -->
+                <!-- Desktop/tablet : sticky flywheel. Mobile: replaced by a compact in-flow indicator below. -->
+                <div class="flywheel-col fixed md:sticky top-0 left-0 md:top-0 w-[70px] md:w-1/2 h-[100vh] z-50 overflow-hidden md:overflow-visible pointer-events-none md:pointer-events-auto flex items-center justify-start md:justify-center">
+                    
+                    <div class="flywheel-container relative md:left-0 flex items-center justify-center w-full h-full">
+                        
+                        <div class="flywheel-wrapper" id="legacy-flywheel">
+                            <!-- Background Map/Satellite -->
+                            <div class="flywheel-bg"></div>
+                            
+                            <!-- Hub -->
+                            <div class="absolute top-1/2 left-1/2 -mt-8 -ml-8 w-16 h-16 bg-panel rounded-full border border-white/20 flex items-center justify-center z-20 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                                <span class="iconify text-3xl text-white" data-icon="solar:planet-3-linear"></span>
+                            </div>
+
+                            <!-- Orbiting Satellites -->
+                            <div class="orbiting-sat sat-1"></div>
+                            <div class="orbiting-sat sat-2"></div>
+
+                            <!-- Nodes (Generated via JS to keep HTML clean, but listed here per requirement logic. Rigid 30 deg increments) -->
+                            <!-- Node 1: 0deg -->
+                            <div class="flywheel-node" style="--deg: 0deg;" data-index="0">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:rocket-linear"></span></div>
+                            </div>
+                            <!-- Node 2: 30deg -->
+                            <div class="flywheel-node" style="--deg: 30deg;" data-index="1">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:earth-linear"></span></div>
+                            </div>
+                            <!-- Node 3: 60deg -->
+                            <div class="flywheel-node" style="--deg: 60deg;" data-index="2">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:flash-linear"></span></div>
+                            </div>
+                            <!-- Node 4: 90deg -->
+                            <div class="flywheel-node" style="--deg: 90deg;" data-index="3">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:arrow-up-linear"></span></div>
+                            </div>
+                            <!-- Node 5: 120deg -->
+                            <div class="flywheel-node" style="--deg: 120deg;" data-index="4">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:moon-linear"></span></div>
+                            </div>
+                            <!-- Node 6: 150deg -->
+                            <div class="flywheel-node" style="--deg: 150deg;" data-index="5">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:transfer-horizontal-linear"></span></div>
+                            </div>
+                            <!-- Node 7: 180deg -->
+                            <div class="flywheel-node" style="--deg: 180deg;" data-index="6">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:arrow-down-linear"></span></div>
+                            </div>
+                            <!-- Node 8: 210deg -->
+                            <div class="flywheel-node" style="--deg: 210deg;" data-index="7">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:ruler-pen-linear"></span></div>
+                            </div>
+                            <!-- Node 9: 240deg -->
+                            <div class="flywheel-node" style="--deg: 240deg;" data-index="8">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:radar-linear"></span></div>
+                            </div>
+                            <!-- Node 10: 270deg -->
+                            <div class="flywheel-node" style="--deg: 270deg;" data-index="9">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:star-fall-minimalistic-2-linear"></span></div>
+                            </div>
+                            <!-- Node 11: 300deg -->
+                            <div class="flywheel-node" style="--deg: 300deg;" data-index="10">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:waterdrops-linear"></span></div>
+                            </div>
+                            <!-- Node 12: 330deg -->
+                            <div class="flywheel-node" style="--deg: 330deg;" data-index="11">
+                                <div class="node-content"><span class="iconify text-xl" data-icon="solar:hand-shake-linear"></span></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MOBILE TIMELINE INDICATOR -->
+                <div class="mobile-timeline-indicator md:hidden" aria-label="Mission timeline progress">
+                    <div class="mobile-timeline-meta">
+                        <span class="text-accent text-xs font-bold tracking-widest uppercase">Mission timeline</span>
+                        <span id="legacy-mobile-phase-label" class="text-muted text-xs">Phase 01 - Launch &amp; Orbit</span>
+                    </div>
+                    <div id="legacy-mobile-phase-track" class="mobile-timeline-track" role="progressbar" aria-label="Mission phase progress" aria-valuemin="1" aria-valuemax="12" aria-valuenow="1"></div>
+                </div>
+
+                <!-- CONTENT COLUMN (Right) -->
+                <div class="content-col w-full md:w-1/2 ml-auto pl-[90px] md:pl-16 pr-6 md:pr-12 pt-[40vh] pb-[40vh]">
+                    
+                    <!-- Day Cards -->
+                    <!-- Phase 1 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 01</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Launch & Orbit</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">The Space Launch System (SLS) lifts off from Kennedy Space Center, carrying the Orion spacecraft and its crew into Low Earth Orbit (LEO).</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:rocket-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Key Metric</div>
+                                <div class="text-sm font-medium text-white">8.8 Million lbs thrust</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 02</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Systems Checkout</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Orion completes one highly elliptical orbit around Earth. The crew performs extensive manual checks of life support and communication systems.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:earth-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Orbit Specs</div>
+                                <div class="text-sm font-medium text-white">1,800 x 37,000 miles</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 03</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">TLI Burn</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">The Trans-Lunar Injection (TLI) burn is executed, accelerating Orion to over 24,500 mph to break free of Earth's gravity well.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:flash-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Velocity Delta</div>
+                                <div class="text-sm font-medium text-white">+ 24,500 mph</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 04</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Translunar Coast</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">A four-day journey toward the Moon. The crew conducts deep space operations, testing rendezvous and proximity sensors using the spent upper stage as a target.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:arrow-up-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Duration</div>
+                                <div class="text-sm font-medium text-white">4 Days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 5 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 05</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Lunar Flyby</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Orion passes the Moon at a close approach of roughly 4,600 miles. The crew observes the lunar far side, out of communication with Earth for approximately 45 minutes.</p>
+                    </div>
+
+                    <!-- Phase 6 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 06</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Gravity Assist</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Utilizing the Moon's gravitational pull, Orion alters its trajectory, executing a free-return maneuver that requires no main engine burn to head back toward Earth.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:transfer-horizontal-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Trajectory Type</div>
+                                <div class="text-sm font-medium text-white">Free-Return</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 7 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 07</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Return Coast</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Another four-day transit across the cislunar space. The crew focuses on scientific experiments, public outreach broadcasts, and monitoring radiation levels.</p>
+                    </div>
+
+                    <!-- Phase 8 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 08</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Correction Burns</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Minor Trajectory Correction Maneuvers (TCMs) using auxiliary thrusters to ensure a precise angle of attack for Earth reentry.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:ruler-pen-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Precision</div>
+                                <div class="text-sm font-medium text-white">± 0.1 Degrees</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 9 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 09</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Earth Approach</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Final preparations for reentry. The Crew Module separates from the European Service Module (ESM), which burns up safely in the atmosphere.</p>
+                    </div>
+
+                    <!-- Phase 10 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 10</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Re-entry</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Hitting the atmosphere at Mach 32 (24,500 mph). The heat shield withstands temperatures nearing 5,000°F (2,760°C) during a unique "skip entry" maneuver.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:star-fall-minimalistic-2-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Max Temp</div>
+                                <div class="text-sm font-medium text-white">5,000°F</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 11 -->
+                    <div class="day-card mb-[40vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 11</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Splashdown</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">Three massive main parachutes deploy, slowing the capsule to a gentle 20 mph before splashing down in the Pacific Ocean.</p>
+                    </div>
+
+                    <!-- Phase 12 -->
+                    <div class="day-card mb-[10vh] relative">
+                        <div class="text-accent text-sm font-bold tracking-widest uppercase mb-2">Phase 12</div>
+                        <h3 class="text-3xl md:text-5xl font-bold mb-4">Recovery</h3>
+                        <p class="text-muted text-lg leading-relaxed mb-6">US Navy recovery teams and NASA personnel secure the capsule and assist the crew in exiting the spacecraft, marking the end of the 10-day mission.</p>
+                        <div class="p-4 rounded-xl bg-panel/80 border border-white/5 flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-full bg-dim/30 flex items-center justify-center shrink-0">
+                                <span class="iconify text-white" data-icon="solar:hand-shake-linear"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-dim uppercase">Status</div>
+                                <div class="text-sm font-medium text-white">Mission Complete</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        
+        <footer class="bg-black py-12 border-t border-white/10 text-center text-dim text-sm">
+            <p>© 2026 Artemis Space Exploration. Data and assets courtesy of NASA / Wikimedia.</p>
+        </footer>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
