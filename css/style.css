@@ -136,13 +136,20 @@
         }
 
         .hero-title {
-            max-width: 13ch;
+            width: 100%;
+            max-width: none;
             color: #f5fbff;
             font-family: 'Space Grotesk', sans-serif;
             font-size: clamp(2.35rem, 7vw, 6.5rem);
             letter-spacing: -0.025em;
             line-height: 1.02;
             text-shadow: 0 0 12px rgba(125, 211, 252, 0.18), 0 0 28px rgba(56, 189, 248, 0.1);
+        }
+
+        @media (min-width: 1024px) {
+            .hero-title {
+                white-space: nowrap;
+            }
         }
 
         .hero-kicker {
