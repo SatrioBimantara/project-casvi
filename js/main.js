@@ -192,13 +192,24 @@ window.handleImageError = (image) => {
     const title = document.getElementById('hero-title');
     if (title) {
         const titleText = title.textContent.trim();
+        const titleWords = titleText.split(/\s+/);
         title.replaceChildren();
 
-        titleText.split('').forEach((character) => {
-            const span = document.createElement('span');
-            span.className = 'char';
-            span.textContent = character === ' ' ? '\u00A0' : character;
-            title.appendChild(span);
+        titleWords.forEach((word, wordIndex) => {
+            const wordWrapper = document.createElement('span');
+            wordWrapper.className = 'char-word';
+
+            word.split('').forEach((character) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = character;
+                wordWrapper.appendChild(span);
+            });
+
+            title.appendChild(wordWrapper);
+            if (wordIndex < titleWords.length - 1) {
+                title.appendChild(document.createTextNode(' '));
+            }
         });
     }
 
@@ -345,6 +356,41 @@ window.handleImageError = (image) => {
 
             if (signalLabel) signalLabel.textContent = point.dataset.title || 'Kenangan kecil';
             if (signalMessage) signalMessage.textContent = point.dataset.message || '';
+        });
+    });
+
+    // Interactive memory coordinates
+    const coordinateButtons = document.querySelectorAll('.universe-coordinate-button');
+    const coordinatePhoto = document.getElementById('coordinate-photo');
+    const coordinatePhotoIndex = document.getElementById('coordinate-photo-index');
+    const coordinateStoryLabel = document.getElementById('coordinate-story-label');
+    const coordinateStoryMessage = document.getElementById('coordinate-story-message');
+
+    coordinateButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            coordinateButtons.forEach((item) => {
+                const isActive = item === button;
+                item.classList.toggle('is-active', isActive);
+                item.setAttribute('aria-pressed', String(isActive));
+            });
+
+            if (coordinatePhoto) {
+                const nextImage = button.dataset.image || '';
+                coordinatePhoto.style.opacity = '0';
+                if (coordinatePhoto.getAttribute('src') === nextImage) {
+                    coordinatePhoto.style.opacity = '1';
+                } else {
+                    coordinatePhoto.addEventListener('load', () => {
+                        coordinatePhoto.style.opacity = '1';
+                    }, { once: true });
+                    coordinatePhoto.src = nextImage;
+                }
+                coordinatePhoto.alt = button.dataset.alt || '';
+            }
+
+            if (coordinatePhotoIndex) coordinatePhotoIndex.textContent = button.dataset.index || '';
+            if (coordinateStoryLabel) coordinateStoryLabel.textContent = button.dataset.label || '';
+            if (coordinateStoryMessage) coordinateStoryMessage.textContent = button.dataset.message || '';
         });
     });
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satrio &amp; Casviana | Our Universe</title>
+    <title>Satrio &amp; Casviana</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,7 +91,7 @@
                 
                 <h1 id="hero-title" class="hero-title text-5xl sm:text-6xl md:text-8xl lg:text-[120px] font-bold tracking-tighter leading-none mb-6">
                     <!-- Text split via JS -->
-                    Satrio &amp; Casviana
+                    Casviana Putri
                 </h1>
                 
                 <p class="hero-description w-full text-base sm:text-lg md:text-xl text-muted max-w-2xl mx-auto mb-8 sm:mb-10 font-light leading-relaxed">
@@ -140,7 +140,7 @@
                     <article class="universe-card universe-card--her reveal-on-scroll">
                         <div class="universe-card-top">
                             <span class="universe-label">Orbit Casviana</span>
-                            <span class="iconify universe-card-icon" data-icon="solar:heart-linear" aria-hidden="true"></span>
+                            <span class="iconify universe-card-icon" aria-hidden="true"></span>
                         </div>
                         <div class="universe-card-photo">
                             <img src="assets/images/via4.jpeg" alt="Casviana tersenyum dalam sebuah foto" loading="lazy" onerror="handleImageError(this)">
@@ -156,7 +156,7 @@
                     <article class="universe-card universe-card--me reveal-on-scroll">
                         <div class="universe-card-top">
                             <span class="universe-label">Orbit Satrio</span>
-                            <span class="iconify universe-card-icon" data-icon="solar:stars-minimalistic-linear" aria-hidden="true"></span>
+                            <span class="iconify universe-card-icon" aria-hidden="true"></span>
                         </div>
                         <div class="universe-card-photo">
                             <img src="assets/images/bima1.jpeg" alt="Satrio tersenyum di tengah suasana pegunungan" loading="lazy" onerror="handleImageError(this)">
@@ -172,23 +172,30 @@
                     <article class="universe-card universe-card--coordinates reveal-on-scroll">
                         <div class="universe-card-top">
                             <span class="universe-label">Koordinat Kita</span>
-                            <span class="iconify universe-card-icon" data-icon="solar:planet-3-linear" aria-hidden="true"></span>
                         </div>
-                        <div class="universe-coordinates">
-                            <div class="universe-coordinate-list">
-                                <div>
-                                    <span>Awal cerita</span>
-                                    <strong>Dimulai dari obrolan sederhana</strong>
-                                </div>
-                                <div>
-                                    <span>Frekuensi kita</span>
-                                    <strong>Masih menemukan alasan untuk tersenyum</strong>
-                                </div>
-                                <div>
-                                    <span>Sekarang</span>
-                                    <strong>Masih memilihmu</strong>
-                                </div>
+                        <div class="coordinate-gallery" id="coordinate-panel" aria-live="polite">
+                            <div class="coordinate-photo-frame">
+                                <img id="coordinate-photo" src="assets/images/via2.jpeg" alt="Satrio dan Casviana berdiri bersama di jalan pada malam hari" loading="lazy" onerror="handleImageError(this)">
+                                <span id="coordinate-photo-index" class="coordinate-photo-index">01 / 03</span>
                             </div>
+                            <div class="coordinate-story">
+                                <span id="coordinate-story-label" class="coordinate-story-label">Awal cerita</span>
+                                <p id="coordinate-story-message">Dimulai dari obrolan sederhana, lalu pelan-pelan menjadi alasan untuk menunggu kabar.</p>
+                            </div>
+                        </div>
+                        <div class="universe-coordinate-list" role="group" aria-label="Pilih koordinat kenangan">
+                            <button class="universe-coordinate-button is-active" type="button" aria-pressed="true" aria-controls="coordinate-panel" data-image="assets/images/via2.jpeg" data-alt="Satrio dan Casviana berdiri bersama di jalan pada malam hari" data-index="01 / 03" data-label="Awal cerita" data-message="Dimulai dari obrolan sederhana, lalu pelan-pelan menjadi alasan untuk menunggu kabar.">
+                                <span>Awal cerita</span>
+                                <strong>Dimulai dari obrolan sederhana</strong>
+                            </button>
+                            <button class="universe-coordinate-button" type="button" aria-pressed="false" aria-controls="coordinate-panel" data-image="assets/images/via1.jpeg" data-alt="Casviana tersenyum dalam sebuah foto" data-index="02 / 03" data-label="Frekuensi kita" data-message="Masih menemukan alasan untuk tersenyum, bahkan dari hal-hal kecil yang tidak direncanakan.">
+                                <span>Frekuensi kita</span>
+                                <strong>Masih menemukan alasan untuk tersenyum</strong>
+                            </button>
+                            <button class="universe-coordinate-button" type="button" aria-pressed="false" aria-controls="coordinate-panel" data-image="assets/images/bima.jpeg" data-alt="Satrio berdiri di tengah suasana pegunungan" data-index="03 / 03" data-label="Sekarang" data-message="Masih memilihmu, sambil belajar menjaga cerita ini tetap punya ruang untuk tumbuh.">
+                                <span>Sekarang</span>
+                                <strong>Masih memilihmu</strong>
+                            </button>
                         </div>
                     </article>
                 </div>
